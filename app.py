@@ -1,5 +1,6 @@
 import flask
 from flask import request
+from flask import render_template
 import requests
 from bs4 import BeautifulSoup
 from wiktionaryparser import WiktionaryParser
@@ -8,6 +9,11 @@ app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
 @app.route('/', methods=['GET', 'POST'])
+def home_page():
+    return render_template("index.html")
+
+
+@app.route('/wikipedia', methods=['GET', 'POST'])
 def wikipedia_scraper():
     term = request.args.get('term')
     response = requests.get(url=f"https://en.wikipedia.org/wiki/{term}",)
@@ -15,7 +21,6 @@ def wikipedia_scraper():
     allp = soup.find(id="bodyContent").find_all("p")
     paragraph = allp[1].text
     return paragraph
-
 
 
 @app.route('/wiktionary', methods=['GET', 'POST'])
